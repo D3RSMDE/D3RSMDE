@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>D3RSMDE</title>
+    <title>D3-RSMDE</title>
     <!-- 引入 Font Awesome 图标库 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -20,7 +20,7 @@
         }
 
         .title {
-            font-size: 3em;
+            font-size: 2.25em;
             font-weight: 650;
             margin-top: 48px;
             margin-bottom: 0.5em;
@@ -617,10 +617,409 @@
 </head>
 <body>
 <div class="container">
-    <div class="title">D3-RSMDE: Depth Detail Diffusion for<br>Accurate and Efficient Remote Sensing Monocular Depth Estimation</div>
+    <div class="title">
+        <strong>D<sup>3</sup></strong>-RSMDE: Depth Detail Diffusion –
+        <br>
+        <strong>41× Faster</strong> and High-Fidelity Remote Sensing Monocular Depth Estimation
+    </div>
     <div class="subtitle"></div>
     <div class="authors"></div>
+    <div class="button-group">
+        <button class="custom-btn" id="custom-btn-paper">
+            <i class="fa-solid fa-file-pdf" style="color:#e25822"></i>
+            Paper
+        </button>
+        <button class="custom-btn" id="custom-btn-code">
+            <i class="fa-brands fa-github"></i>
+            Code
+        </button>
+        <!-- <button class="custom-btn" id="custom-btn-dataset">
+            <img src="src/huggingface_logo-noborder.svg" width="25" height="25" style="vertical-align:middle;">
+            </img>
+            Our datasets
+        </button> -->
+    </div>
+    <div class="level1">
+        <img src="src/图片1.png" alt="主图" style="max-width: 70%; margin: 20px auto; border-radius: 12px;"/>
+    </div>
+    <!-- 新增 Overview 和 Gallery 区域 -->
+    <div style="max-width: 900px; margin: 48px auto 0 auto; font-family: 'Times New Roman', Times, serif;">
+        <h2 style="text-align: center; font-size: 2.3em; font-weight: bold; margin-bottom: 0.5em; color: #222;">
+            Overview</h2>
+        <p style="text-align: justify; font-size: 1.5em; color: #333; line-height: 1.6; margin-bottom: 1.2em;">
+            Real-time, high-fidelity monocular depth estimation from remote sensing imagery is crucial for numerous applications, yet existing methods face a stark trade-off between accuracy and efficiency. 
+            While leveraging Vision Transformer (ViT) backbones for dense prediction are fast, they often exhibit poor perceptual quality. 
+            Conversely, diffusion models offer high fidelity but at a prohibitive computational cost. To overcome these limitations, we propose <strong>D</strong>epth <strong>D</strong>etail <strong>D</strong>iffusion for <strong>R</strong>emote <strong>S</strong>ensing <strong>M</strong>onocular <strong>D</strong>epth <strong>E</strong>stimation (<strong>D<sup>3</sup>-RSMDE</strong>), an efficient diffusion framework designed to achieve an optimal balance between speed and quality. 
+            Our framework first leverages a ViT-based module to rapidly generate a high-quality coarse depth map, which serves as a structural prior, effectively replacing the time-consuming initial contouring stage of diffusion models. 
+            Building on this prior, a lightweight U-Net performs detail refinement within a compact latent space, enabled by a Variational Autoencoder (VAE), through a dynamically guided diffusion process that requires only a few iterations. 
+            Extensive experiments demonstrate that D<sup>3</sup>-RSMDE achieves an 11.85% improvement in the Learned Perceptual Image Patch Similarity (LPIPS) perceptual metric over leading models like Marigold, alongside a nearly <strong>41× speedup</strong> in inference, while maintaining a computational footprint comparable to lightweight ViT models.
+        </p>
+        <h2 style="text-align: center; font-size: 2.3em; font-weight: bold; margin: 2.5em 0 0.5em 0; color: #222;">
+            Dataset Gallery</h2>
+    </div>
 
+    <!-- 滑动画廊 -->
+    <div class="slider-gallery">
+        <!-- 上排 -->
+        <div class="slider-row" id="top-row1"></div>
+
+        <!-- 下排 -->
+        <div class="slider-row" id="bottom-row1"></div>
+
+        <!-- 导航按钮 -->
+        <button class="slider-nav slider-prev">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button class="slider-nav slider-next">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+        <!-- 指示点 -->
+        <div class="slider-dots"></div>
+    </div>
+
+    <div class="slider-gallery">
+        <!-- 上排 -->
+        <div class="slider-row" id="top-row2"></div>
+
+        <!-- 下排 -->
+        <div class="slider-row" id="bottom-row2"></div>
+
+        <!-- 导航按钮 -->
+        <button class="slider-nav slider-prev">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button class="slider-nav slider-next">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+        <!-- 指示点 -->
+        <div class="slider-dots"></div>
+    </div>
+
+
+    <div class="level4">
+        <h2 style="text-align: center; font-size: 2.3em; font-weight: bold; margin: 2.5em 0 0.5em 0; color: #222;">
+            Frame structure</h2>
+        <div class="image-row">
+            <img src="src/pipeline1.png" alt="Image 1" style="width: 75%; height: auto;">
+        </div>
+        <!--        <h3 style="    -webkit-font-smoothing: antialiased;text-rendering: optimizeLegibility;text-size-adjust: 100%;-->
+        <!--        font-family: 'Noto Sans', sans-serif;box-sizing: inherit;margin: 0;padding-top:30px;word-break: break-word;-->
+        <!--        text-align: center!important;color: #363636;font-weight: 600;line-height: 1.125;font-size: 1.5em;margin-bottom: 1.5rem;">-->
+        <!--            Alignment-->
+        <!--        </h3>-->
+        <p style="    color: #4a4a4a;font-size: 1.1em;font-weight: 400;line-height: 1.5;
+        font-family: 'Noto Sans', sans-serif;box-sizing: inherit; max-width: 1000px;
+         word-wrap: break-word;margin: 0 auto; padding-bottom: 20px; padding-top: 30px; ">
+        </p>
+    </div>
+
+    <!-- Benchmark Comparison Section -->
+    <div class="level3">
+        <h2 style="text-align: center; font-size: 2.3em; font-weight: bold; margin: 2.5em 0 0.5em 0; color: #222;">
+            Experiments Results</h2>
+        <img src="src/output1.png" alt="Benchmark Image" class="level3-image">
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            function initPagerFor(gallery) {
+                const rows = gallery.querySelectorAll('.slider-row');
+                const prevBtn = gallery.querySelector('.slider-prev');
+                const nextBtn = gallery.querySelector('.slider-next');
+                const dotsBox = gallery.querySelector('.slider-dots');
+                let currentIndex = 0,
+                    visibleCols,
+                    maxIndex,
+                    autoSlideTimer,
+                    isDragging = false;
+
+                // 计算一行能显示多少列
+                function calcVisibleCols() {
+                    const galleryW = gallery.clientWidth;
+                    const style = getComputedStyle(rows[0]);
+                    const gap = parseFloat(style.gap) || 0;
+                    const itemW = rows[0].querySelector('.slider-item')
+                        .getBoundingClientRect().width;
+                    return Math.max(1, Math.floor((galleryW + gap) / (itemW + gap)));
+                }
+
+                function buildDots() {
+                    dotsBox.innerHTML = '';
+                    for (let i = 0; i <= maxIndex; i++) {
+                        const dot = document.createElement('span');
+                        dot.className = 'slider-dot';
+                        if (i === currentIndex) dot.classList.add('active');
+                        dot.addEventListener('click', () => {
+                            currentIndex = i;
+                            update();
+                            resetAuto();
+                        });
+                        dotsBox.appendChild(dot);
+                    }
+                }
+
+                function update() {
+                    const style = getComputedStyle(rows[0]);
+                    const gap = parseFloat(style.gap) || 0;
+                    const itemW = rows[0].querySelector('.slider-item')
+                        .getBoundingClientRect().width;
+                    const offset = currentIndex * (itemW + gap);
+                    rows.forEach(r => {
+                        r.style.transform = `translateX(${-Math.round(offset)}px)`;
+                    });
+                    // 更新 dots 高亮
+                    dotsBox.querySelectorAll('.slider-dot').forEach((d, i) => {
+                        d.classList.toggle('active', i === currentIndex);
+                    });
+                }
+
+                function recalc() {
+                    visibleCols = calcVisibleCols();
+                    const total = rows[0].children.length;
+                    maxIndex = Math.max(0, total - visibleCols);
+                    currentIndex = Math.min(currentIndex, maxIndex);
+                    buildDots();
+                    update();
+                }
+
+                function goNext() {
+                    currentIndex = (currentIndex === maxIndex ? 0 : currentIndex + 1);
+                    update();
+                }
+
+                function goPrev() {
+                    currentIndex = (currentIndex === 0 ? maxIndex : currentIndex - 1);
+                    update();
+                }
+
+                function startAuto() {
+                    clearInterval(autoSlideTimer);
+                    autoSlideTimer = setInterval(() => {
+                        if (!isDragging) goNext();
+                    }, 3000);
+                }
+
+                function stopAuto() {
+                    clearInterval(autoSlideTimer);
+                }
+
+                function resetAuto() {
+                    stopAuto();
+                    startAuto();
+                }
+
+                // 绑定左右按钮
+                prevBtn.addEventListener('click', () => {
+                    goPrev();
+                    resetAuto();
+                });
+                nextBtn.addEventListener('click', () => {
+                    goNext();
+                    resetAuto();
+                });
+
+                // 鼠标/触摸悬停时暂停
+                gallery.addEventListener('mouseenter', stopAuto);
+                gallery.addEventListener('mouseleave', resetAuto);
+                gallery.addEventListener('touchstart', stopAuto);
+                gallery.addEventListener('touchend', resetAuto);
+
+                // 拖动 handle 时也暂停
+                gallery.querySelectorAll('.twentytwenty-handle').forEach(handle => {
+                    handle.addEventListener('mousedown', () => {
+                        isDragging = true;
+                        stopAuto();
+                    });
+                    handle.addEventListener('touchstart', () => {
+                        isDragging = true;
+                        stopAuto();
+                    });
+                });
+                document.addEventListener('mouseup', () => {
+                    isDragging = false;
+                    resetAuto();
+                });
+                document.addEventListener('touchend', () => {
+                    isDragging = false;
+                    resetAuto();
+                });
+
+                window.addEventListener('resize', recalc);
+
+                // 首次启动
+                recalc();
+                startAuto();
+            }
+
+            (async function () {
+                // —— 1）动态扫描并插入 slider-item ——
+                const rowsConfig = [
+                    {
+                        id: 'top-row1',
+                        overlay: 'src/img/RGB1/',
+                        bellow: 'src/img/Label1/',
+                        makeBellow: id => `tile_${id}_color.png`
+                    },
+                    {
+                        id: 'bottom-row1',
+                        overlay: 'src/img/DPT1/',
+                        bellow: 'src/img/Ours1/',
+                        makeBellow: id => `tile_${id}_pred_color.png`
+                    },
+                    {
+                        id: 'top-row2',
+                        overlay: 'src/img/RGB2/',
+                        bellow: 'src/img/Label2/',
+                        makeBellow: id => `tile_${id}_color.png`
+                    },
+                    {
+                        id: 'bottom-row2',
+                        overlay: 'src/img/DPT2/',
+                        bellow: 'src/img/Ours2/',
+                        makeBellow: id => `tile_${id}_pred_color.png`
+                    }
+                ];
+
+                async function scanDir(dir) {
+                    // 假设你已经使用 JSON 清单 或者 服务端 API 返回文件列表
+                    const res = await fetch(dir + 'file.json');
+                    return res.ok ? res.json() : [];
+                }
+
+                for (const cfg of rowsConfig) {
+                    const container = document.getElementById(cfg.id);
+                    if (!container) continue;
+
+                    const files = await scanDir(cfg.overlay);   // e.g. ["tile_131.png", ...]
+                    files.forEach(fname => {
+                        const num = fname.match(/\d+/)[0];
+                        const overlaySrc = cfg.overlay + fname;
+                        const bellowSrc = cfg.bellow + cfg.makeBellow(num);
+                        // ① 在外层声明变量
+                        let label1, label2;
+
+                        // ② 根据路径或 cfg 决定它们的值
+                        if (overlaySrc.includes("RGB")) {
+                            label1 = "RGB";
+                            label2 = "Label";
+                        } else {
+                            label1 = "DPT";
+                            label2 = "Ours";
+                        }
+
+                        const item = document.createElement('div');
+                        item.className = 'slider-item';
+                        item.innerHTML = `
+                        <div class="img-compare-container">
+                          <div class="label input">${label1}</div>
+                          <div class="label ours">${label2}</div>
+                            <div class="img-bellow">
+                              <img class="slider-item-bellow" src="${bellowSrc}">
+                            </div>
+                            <div class="img-overlay">
+                              <img class="slider-item-above" src="${overlaySrc}">
+                            </div>
+                            <div class="twentytwenty-handle">
+                              <span class="twentytwenty-left-arrow"></span>
+                              <span class="twentytwenty-right-arrow"></span>
+                            </div>
+                        </div>`;
+                        container.appendChild(item);
+                    });
+                }
+
+                // —— 2）等待所有新插入的 <img> 真正 load 完 ——
+                let imgs = Array.from(document.querySelectorAll(
+                    '#top-row1 img, #bottom-row1 img'
+                ));
+                await Promise.all(imgs.map(img => new Promise(res => {
+                    if (img.complete && img.naturalHeight !== 0) return res();
+                    img.addEventListener('load', res);
+                    img.addEventListener('error', res);
+                })));
+
+                imgs = Array.from(document.querySelectorAll(
+                    '#top-row2 img, #bottom-row2 img'
+                ));
+                await Promise.all(imgs.map(img => new Promise(res => {
+                    if (img.complete && img.naturalHeight !== 0) return res();
+                    img.addEventListener('load', res);
+                    img.addEventListener('error', res);
+                })));
+
+
+                initImageCompare();
+                // —— 4）再初始化翻页逻辑（每次只移动一个 slide）——
+                document.querySelectorAll('.slider-gallery').forEach(initPagerFor);
+
+                // 重新计算一下
+            })();
+
+            // Paper button click - display a modal message
+            document.querySelector('#custom-btn-paper').addEventListener('click', function () {
+                alert('The paper has not been made public yet');
+            });
+
+            // Dataset Code button click - navigate to the GitHub page
+            document.querySelector('#custom-btn-code').addEventListener('click', function () {
+                window.location.href = 'https://anonymous.4open.science/r/D3RSMDE-5547/README.md';
+            });
+
+            // Our datasets button click - navigate to Hugging Face page
+            document.querySelector('#custom-btn-dataset').addEventListener('click', function () {
+                window.location.href = 'https://huggingface.co/datasets/RS3DBench/RS3DBench';
+            });
+        });
+
+        function initImageCompare() {
+            document.querySelectorAll('.img-compare-container').forEach(container => {
+                const overlay = container.querySelector('.img-overlay');
+                const handle = container.querySelector('.twentytwenty-handle');
+                if (!overlay || !handle) return;
+
+                // 1. 统一函数：把 overlay 拉到中间，handle 跟上
+                function resetHandle() {
+                    const W = container.clientWidth;
+                    const x = W / 2;
+                    overlay.style.width = x + 'px';
+                    handle.style.left = (x - handle.offsetWidth / 2) + 'px';
+                }
+
+                // 2. 初始置中
+                resetHandle();
+
+                // 3. 窗口 resize 时也要重新置中
+                window.addEventListener('resize', resetHandle);
+
+                // 4. 绑定同一份拖拽逻辑
+                let dragging = false;
+                handle.addEventListener('mousedown', e => {
+                    e.preventDefault();
+                    dragging = true;
+                });
+                handle.addEventListener('touchstart', e => {
+                    e.preventDefault();
+                    dragging = true;
+                });
+                document.addEventListener('mouseup', () => dragging = false);
+                document.addEventListener('touchend', () => dragging = false);
+
+                document.addEventListener('mousemove', onDrag);
+                document.addEventListener('touchmove', onDrag);
+
+                function onDrag(e) {
+                    if (!dragging) return;
+                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    let offsetX = clientX - container.getBoundingClientRect().left;
+                    offsetX = Math.max(0, Math.min(offsetX, container.clientWidth));
+                    overlay.style.width = offsetX + 'px';
+                    handle.style.left = (offsetX - handle.offsetWidth / 2) + 'px';
+                }
+            });
+        }
+    </script>
 </div>
 </body>
 </html>
