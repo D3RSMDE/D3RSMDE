@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>D3-RSMDE</title>
+    <!-- 引入 Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%; /* 确保html和body能占满全高 */
+        }
+
+        /* 找到原有的 body 样式并替换为下面的代码 */
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            text-align: center;
+            background: #fff;
+            margin: 0; /* 确保 body 没有外边距 */
+            display: flex; /* 启用 flex 布局 */
+            flex-direction: column; /* 设置主轴为垂直方向 */
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            /*padding: 0 24px 40px 24px;*/
+            flex: 1; /* 让主内容区域自动伸展，将页尾推向底部 */
+        }
+
+        .title {
+            font-size: 2.25em;
+            font-weight: 650;
+            margin-top: 48px;
+            margin-bottom: 0.5em;
+            line-height: 1.4;
+            color: #363636;
+            text-align: center;
+            word-wrap: break-word;
+            max-width: 100%;
+            /*    换个好看点的字体*/
+            /*    font-family: 'Noto Sans', sans-serif;*/
+            /*    font-family: 'Segoe UI', Arial, sans-serif;*/
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+
+        .subtitle {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 18px 0 10px 0;
+            color: #222;
+        }
+
+        .authors {
+            margin: 10px 0 0 0;
+            color: #337ab7;
+            font-size: 1.1em;
+        }
+
+        .affiliation {
+            color: #666;
+            margin-bottom: 18px;
+            font-size: 1em;
+        }
+
+        .button-group {
+            margin: 24px 0 32px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            justify-content: center;
+        }
+
+        .custom-btn {
+            background: #333;
+            color: #fff;
+            border: none;
+            border-radius: 2em;
+            padding: 0.7em 1.6em;
+            font-size: 1.15em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.7em;
+            font-family: inherit;
+            font-weight: 500;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: none;
+        }
+
+        .custom-btn .fa-solid,
+        .custom-btn .fa-brands,
+        .custom-btn .fa-regular {
+            font-size: 1.2em;
+        }
+
+        .custom-btn.paper {
+            background: #333;
+        }
+
+        .custom-btn.code {
+            background: #333;
+        }
+
+        .custom-btn.demo {
+            background: #222;
+        }
+
+        .custom-btn.tutorial {
+            background: #222;
+        }
+
+        .custom-btn.colab {
+            background: #333;
+        }
+
+        .custom-btn:hover {
+            background: #222;
+        }
+
+        .star-count {
+            background: #222;
+            color: #fff;
+            border-radius: 0.7em;
+            padding: 0.1em 0.6em;
+            font-size: 0.95em;
+            margin: 0 0.2em;
+            font-weight: bold;
+            letter-spacing: 0.03em;
+        }
+
+        .button-group button {
+            background: #222;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 22px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .button-group button.paper {
+            background: #222;
+        }
+
+        .button-group button.code {
+            background: #222;
+        }
+
+        .button-group button.demo {
+            background: #222;
+            color: #fff;
+        }
+
+        .button-group button.tutorial {
+            background: #222;
+            color: #fff;
+        }
+
+        .button-group button.colab {
+            background: #222;
+        }
+
+        .button-group button:hover {
+            opacity: 0.85;
+        }
+
+        /*.img-grid {*/
+        /*    display: grid;*/
+        /*    grid-template-columns: repeat(5, 1fr);*/
+        /*    gap: 8px;*/
+        /*    justify-content: center;*/
+        /*    margin: 32px 0 18px 0;*/
+        /*}*/
+
+        .img-grid img {
+            width: 100%;
+            aspect-ratio: 1.2/1;
+            object-fit: cover;
+            border-radius: 10px;
+            background: #eee;
+        }
+
+        /*.arrow-row {*/
+        /*    display: flex;*/
+        /*    justify-content: center;*/
+        /*    align-items: flex-end;*/
+        /*    gap: 60px;*/
+        /*    margin: 0 0 0 0;*/
+        /*    min-height: 40px;*/
+        /*}*/
+
+        /*.arrow {*/
+        /*    font-size: 2.5em;*/
+        /*    color: #d33;*/
+        /*    margin: 0 10px;*/
+        /*    user-select: none;*/
+        /*}*/
+
+        /*.bottom-section {*/
+        /*    display: flex;*/
+        /*    justify-content: center;*/
+        /*    align-items: flex-end;*/
+        /*    gap: 40px;*/
+        /*    margin-top: 18px;*/
+        /*}*/
+
+        .level2 img {
+            /*限制高度*/
+            height: 280px;
+        }
+
+        .level3 img {
+            /*限制高度*/
+            height: 1500px;
+        }
+
+        .level4 img {
+            /*限制高度*/
+            width: 90%;
+        }
+
+        .bottom-section img {
+            width: 180px;
+            border-radius: 8px;
+            background: #eee;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                max-width: 98vw;
+            }
+
+            /*.img-grid {*/
+            /*    grid-template-columns: repeat(3, 1fr);*/
+            /*}*/
+            .bottom-section img {
+                width: 120px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                padding: 0 4vw 24px 4vw;
+            }
+
+            .title {
+                font-size: 2em;
+            }
+
+            /*.img-grid {*/
+            /*    grid-template-columns: repeat(2, 1fr);*/
+            /*}*/
+            .bottom-section img {
+                width: 80px;
+            }
+
+            /*.arrow-row {*/
+            /*    gap: 20px;*/
+            /*}*/
+        }
+
+        .img-compare-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            /* 不设 width/height，让它按照图片原始像素渲染 */
+        }
+
+        /* 悬停遮罩层 */
+        .img-compare-container::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.28);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s;
+            z-index: 20;
+        }
+
+        .img-compare-container:hover::after {
+            opacity: 1;
+        }
+
+
+        .img-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* 按钮容器 */
+        .twentytwenty-handle {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            background: transparent;
+            border: 2.5px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 2px 12px 0 rgba(60, 60, 60, 0.18);
+            cursor: ew-resize;
+            z-index: 40;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        .twentytwenty-handle:hover {
+            border: 2.5px solid #bbb;
+            box-shadow: 0 4px 18px 0 rgba(60, 60, 60, 0.22);
+        }
+
+
+        .img-compare-container .img-overlay img {
+            display: block;
+            width: auto; /* 宽度不要固定填满 */
+            height: 100%; /* 高度一定要撑满 overlay 容器 */
+            object-fit: contain;
+            position: relative; /* 改为相对定位，让它们参与文档流 */
+        }
+
+        .img-compare-container .img-bellow img {
+            display: block;
+            width: 100%; /* 底图填满整个对比容器宽度 */
+            height: auto; /* 按比例决定高度并撑开父容器 */
+            object-fit: contain;
+            position: relative; /* 改为相对定位，让它们参与文档流 */
+        }
+
+        /* 上下延伸的细线 */
+        .twentytwenty-handle:before,
+        .twentytwenty-handle:after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            width: 3px;
+            height: 39999%;
+            background: #fff;
+            transform: translateX(-50%);
+            z-index: 999;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .twentytwenty-handle:before {
+            top: -9999px;
+            bottom: 50%;
+        }
+
+        .twentytwenty-handle:after {
+            bottom: -9999px;
+            top: 50%;
+        }
+
+        /* 左右箭头样式 */
+        .twentytwenty-left-arrow,
+        .twentytwenty-right-arrow {
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            text-size-adjust: 100%;
+            line-height: 1.5;
+            font-family: 'Noto Sans', sans-serif;
+            color: rgba(0, 0, 0, .7);
+            visibility: visible;
+            font-size: 0;
+            -webkit-user-select: none;
+            cursor: pointer;
+            font-style: inherit;
+            font-weight: inherit;
+            width: 0;
+            height: 0;
+            border: 6px inset transparent;
+            position: absolute;
+            top: 50%;
+            margin-top: -6px;
+            box-sizing: content-box;
+        }
+
+        .twentytwenty-left-arrow {
+            /* 覆盖原先的 border 定义 */
+            border-left: 0;
+            border-right: 10px solid #fff;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            left: 3px; /* 根据需要微调位置 */
+            margin-right: 0;
+        }
+
+        .twentytwenty-right-arrow {
+            border-right: 0;
+            border-left: 10px solid #fff;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            right: 3px; /* 根据需要微调位置 */
+            margin-right: 0;
+        }
+
+        /* 去除中心点 */
+
+        /* —— 左右标签 —— */
+        .img-compare-container .label {
+            position: absolute;
+            top: 45%;
+            padding: 9px 18px;
+            background: rgba(255, 255, 255, 0.35);
+            color: #fff;
+            font-size: 16px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-weight: 400;
+            border-radius: 3px;
+            border: 1.2px solid transparent;
+            letter-spacing: 1.2px;
+            text-transform: none;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s, left 0.2s, right 0.2s;
+            z-index: 35;
+            box-shadow: 0 2px 8px 0 rgba(80, 80, 80, 0.07);
+        }
+
+        .img-compare-container .label.input {
+            left: 10px;
+            transform: none;
+        }
+
+        .img-compare-container .label.ours {
+            right: 10px;
+            transform: none;
+        }
+
+        .img-compare-container:hover .label {
+            opacity: 1;
+        }
+
+        .slider-row {
+            /*display: flex;*/
+            /*gap: 10px; !* 卡片间距 *!*/
+            /*transition: transform 0.5s ease;*/
+            /*margin: 0;*/
+            display: grid;
+            gap: 10px; /* 卡片间距 */
+            grid-template-columns: repeat(4, 1fr);
+            transition: transform 0.5s ease;
+            margin: 0;
+        }
+
+        .slider-item {
+            flex: 0 0 calc((100% - 3 * 10px) / 4);
+            padding: 0 5px; /* 完全移除内边距，消除图片间的留白 */
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* 大屏：3 列 */
+        @media (max-width: 1200px) {
+            .slider-item {
+                flex: 0 0 calc((100% - 2 * 10px) / 3);
+            }
+        }
+
+        /* 中屏：2 列 */
+        @media (max-width: 900px) {
+            .slider-item {
+                flex: 0 0 calc((100% - 1 * 10px) / 2);
+            }
+        }
+
+        /* 小屏：1 列 */
+        @media (max-width: 600px) {
+            .slider-item {
+                flex: 0 0 100%;
+            }
+        }
+
+        .img-compare-container {
+            position: relative;
+            width: 100%; /* 使用百分比宽度 */
+            max-width: 100%; /* 移除最大宽度限制，让图片填满容器 */
+            height: auto; /* 高度自适应 */
+            overflow: hidden;
+            margin: 0; /* 移格外边距 */
+        }
+
+        /* 调整滑动画廊容器样式 */
+        .slider-gallery {
+            position: relative;
+            width: 70%;
+            max-width: 85%;
+            margin: 0 auto;
+            overflow: hidden;
+            padding: 0;
+        }
+
+        /* 调整行间距 */
+        .slider-row {
+            display: flex;
+            transition: transform 0.5s ease;
+            margin-bottom: 0; /* 移除行间距 */
+        }
+
+        .slider-item .slider-item-bellow {
+            width: 100%; /* Images will now fill their parent container */
+            height: auto; /* Maintain aspect ratio */
+            object-fit: contain; /* Ensure images are contained within their parent container */
+        }
+
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 20px;
+            border: none;
+        }
+
+        .slider-prev {
+            left: 10px;
+        }
+
+        .slider-next {
+            right: 10px;
+        }
+
+        .slider-dots {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+            gap: 6px;
+        }
+
+        .slider-dot {
+            /* 点点之间的小间距 */
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            text-size-adjust: 100%;
+            font-size: 1em;
+            font-weight: 400;
+            line-height: 1.5;
+            font-family: 'Noto Sans', sans-serif;
+            color: rgba(0, 0, 0, .7);
+            visibility: visible;
+            text-align: center;
+            box-sizing: inherit;
+            background: #fff;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%; /* 圆形 */
+            margin: 0 3px;
+            transition: transform .3s, -webkit-transform .3s;
+            cursor: pointer;
+            background-color: #FFF;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 1);
+            display: inline-block;
+        }
+
+        /* 高亮的圆点 */
+        .slider-dot.active {
+            transform: scale(1.2);
+            background-color: #333;
+        }
+
+        /* 底部画廊：左上、右上角圆角 */
+        #top-row1 .img-compare-container {
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+        }
+
+        #bottom-row1 .img-compare-container {
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+        }
+
+        #top-row2 .img-compare-container {
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+        }
+
+        #bottom-row2 .img-compare-container {
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+        }
+
+        .related-link {
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            text-size-adjust: 100%;
+            font-size: 1em;
+            font-weight: 400;
+            line-height: 1.5;
+            font-family: 'Noto Sans', sans-serif;
+            text-align: justify !important;
+            box-sizing: inherit;
+            color: #3273dc;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        /* --- 新增和修改的CSS --- */
+
+        .new-section {
+            max-width: 1200px;
+            margin: 48px auto 0 auto;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.3em;
+            font-weight: bold;
+            margin-bottom: 1em;
+            color: #222;
+        }
+
+        /* 需求1: 修改图片容器样式 */
+        .image-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
+            flex-wrap: wrap;
+            width: 80%; /* 占页面宽度的60% */
+            min-width: 340px; /* 最小宽度，小于此宽度不再缩小 */
+            margin: 0 auto; /* 居中显示 */
+        }
+
+        .comparison-image {
+            /* 修改：让图片更灵活地填充容器 */
+            width: calc(50% - 10px); /* 宽度为父容器的一半，减去gap的一半 */
+            min-width: 300px; /* 为单张图片也设置一个最小宽度，防止在flex换行时被过度压缩 */
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 需求2: 修改文字介绍部分的字体样式 */
+        .section-caption, .table-caption {
+            font-family: 'Times New Roman', Times, serif; /* 与Overview部分字体一致 */
+            text-align: justify; /* 与Overview部分对齐方式一致 */
+            font-size: 1.2em; /* 比Overview的1.5em稍小 */
+            color: #333;
+            line-height: 1.6;
+            margin-top: 1.5em; /* 调整与上方内容的间距 */
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            font-style: normal; /* 确保不是斜体 */
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 2em;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto;
+            font-size: 0.9em;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .results-table th, .results-table td {
+    border: 1px solid #ddd;
+    padding: 10px 8px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* 表头背景色和下边框加粗 */
+.results-table thead th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    color: #333;
+    border-bottom: 2px solid #888; /* 表头整体下边框加粗 */
+}
+
+/* --- 精确控制加粗的垂直分割线 --- */
+
+/* 1. 加粗第一列（Model）的右边框 */
+/* 使选择器更精确，只针对第一行表头的第一个th，避免影响第二行表头 */
+.results-table thead tr:first-child th:first-child,
+.results-table tbody td:first-child {
+    border-right: 2px solid #888;
+}
+
+/* 2. 加粗每个指标组之间的右边框 */
+
+/* (a) 对于数据行（tbody）*/
+.results-table tbody td:nth-child(6),
+.results-table tbody td:nth-child(11),
+.results-table tbody td:nth-child(16) {
+    border-right: 2px solid #888;
+}
+
+/* (b) 对于第一行表头 */
+.results-table thead tr:first-child th:nth-child(2), /* MAE */
+.results-table thead tr:first-child th:nth-child(3), /* δ³ */
+.results-table thead tr:first-child th:nth-child(4) { /* PSNR */
+     border-right: 2px solid #888;
+}
+
+/* (c) 新增：对于第二行表头，让线贯通 */
+.results-table thead tr:nth-child(2) th:nth-child(5),  /* MAE组的Ast */
+.results-table thead tr:nth-child(2) th:nth-child(10), /* δ³组的Ast */
+.results-table thead tr:nth-child(2) th:nth-child(15) { /* PSNR组的Ast */
+    border-right: 2px solid #888;
+}
+
+
+        .results-table thead th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .results-table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .results-table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .results-table .group-separator td {
+            border-top: 2px solid #555;
+        }
+
+        /* 需求3: 新增页尾样式 */
+        footer {
+            width: 100%;
+            padding: 25px 0;
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 1.1em;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        /* --- 页尾配色方案选项 --- */
+
+        /* 选项1: 经典深色 (默认启用) */
+        footer {
+            background-color: #2c3e50; /* 深蓝灰色背景 */
+            color: #ecf0f1; /* 浅灰色文字 */
+        }
+
+        /*
+        // 选项2: 商务蓝色 (如需使用，请取消注释，并注释掉选项1)
+        footer {
+            background-color: #34495e; // 中度蓝色背景
+            color: #bdc3c7; // 银色文字
+        }
+        */
+
+        /*
+        // 选项3: 现代浅色 (如需使用，请取消注释，并注释掉选项1)
+        footer {
+            background-color: #f8f9fa; // 非常浅的灰色背景
+            color: #343a40; // 深灰色文字
+            border-top: 1px solid #dee2e6; // 添加一个上边框
+        }
+        */
+
+    </style>
+    <link rel="stylesheet" href="https://cdn.knightlab.com/libs/juxtapose/latest/css/juxtapose.css">
+    <script src="https://cdn.knightlab.com/libs/juxtapose/latest/js/juxtapose.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="title">
+        <strong>D<sup>3</sup></strong>-RSMDE: 40× Faster and High-Fidelity
+        <br>
+        Remote Sensing Monocular Depth Estimation
+    </div>
+    <div class="subtitle"></div>
+    <div class="authors"></div>
+    <div class="button-group">
+        <button class="custom-btn" id="custom-btn-paper">
+            <i class="fa-solid fa-file-pdf" style="color:#e25822"></i>
+            Paper
+        </button>
+        <button class="custom-btn" id="custom-btn-code">
+            <i class="fa-brands fa-github"></i>
+            Code
+        </button>
+        <!-- <button class="custom-btn" id="custom-btn-dataset">
+            <img src="src/huggingface_logo-noborder.svg" width="25" height="25" style="vertical-align:middle;">
+            </img>
+            Our datasets
+        </button> -->
+    </div>
+    <div class="level1">
+        <img src="src/Whole_Structure-new.png" alt="主图"
+             style="max-width: 70%; margin: 20px auto; border-radius: 12px;"/>
+    </div>
+    <!-- 新增 Overview 和 Gallery 区域 -->
+    <div style="max-width: 900px; margin: 48px auto 0 auto; font-family: 'Times New Roman', Times, serif;">
+        <h2 style="text-align: center; font-size: 2.3em; font-weight: bold; margin-bottom: 0.5em; color: #222;">
+            Overview</h2>
+        <p style="text-align: justify; font-size: 1.5em; color: #333; line-height: 1.6; margin-bottom: 1.2em;">
+            Real-time, high-fidelity monocular depth estimation from remote sensing imagery is crucial for numerous
+            applications, yet existing methods face a stark trade-off between accuracy and efficiency. Although using
+            Vision Transformer (ViT) backbones for dense prediction is fast, they often exhibit poor perceptual quality.
+            Conversely, diffusion models offer high fidelity but at a prohibitive computational cost. To overcome these
+            limitations, we propose <strong>D</strong>epth <strong>D</strong>etail <strong>D</strong>iffusion for
+            <strong>R</strong>emote <strong>S</strong>ensing <strong>M</strong>onocular <strong>D</strong>epth
+            <strong>E</strong>stimation (<strong>D<sup>3</sup>-RSMDE</strong>), an efficient framework designed to
+            achieve an optimal balance between speed and quality. Our framework first leverages a ViT-based module to
+            rapidly generate a high-quality preliminary depth map construction, which serves as a structural prior,
+            effectively replacing the time-consuming initial structure generation stage of diffusion models. Based on
+            this prior, we propose a <strong>P</strong>rogressive <strong>L</strong>inear <strong>B</strong>lending
+            <strong>R</strong>efinement (PLBR) strategy, which uses a lightweight
+            U-Net to refine the details in only a few iterations. The entire refinement step operates efficiently in a
+            compact latent space supported by a Variational Autoencoder (VAE). Extensive experiments demonstrate that
+            -RSMDE achieves a notable 11.85% reduction in the Learned Perceptual Image Patch Similarity (LPIPS)
+            perceptual metric over leading models like Marigold, while also achieving over a 40
+            speedup in inference and maintaining VRAM usage comparable to lightweight ViT models.
+        </p>
+        <h2 style="text-align: center; font-size: 2.3em; font-weight: bold; margin: 2.5em 0 0.5em 0; color: #222;">
+            Dataset Gallery</h2>
+    </div>
+
+    <!-- 滑动画廊 -->
+    <div class="slider-gallery">
+        <!-- 上排 -->
+        <div class="slider-row" id="top-row1"></div>
+
+        <!-- 下排 -->
+        <div class="slider-row" id="bottom-row1"></div>
+
+        <!-- 导航按钮 -->
+        <button class="slider-nav slider-prev">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button class="slider-nav slider-next">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+        <!-- 指示点 -->
+        <div class="slider-dots"></div>
+    </div>
+
+    <div class="slider-gallery">
+        <!-- 上排 -->
+        <div class="slider-row" id="top-row2"></div>
+
+        <!-- 下排 -->
+        <div class="slider-row" id="bottom-row2"></div>
+
+        <!-- 导航按钮 -->
+        <button class="slider-nav slider-prev">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button class="slider-nav slider-next">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+        <!-- 指示点 -->
+        <div class="slider-dots"></div>
+    </div>
+
+
+    <div class="level4">
+    </div>
+
+    <div class="new-section">
+        <h2 class="section-title">Experiments Results Comparison</h2>
+        <div class="image-container">
+            <img src="src/inference_vs_training_time.png" alt="Inference vs Training Time" class="comparison-image">
+            <img src="src/inference_vs_training_VRAM.png" alt="Inference vs Training VRAM" class="comparison-image">
+        </div>
+        <p class="section-caption">
+            The inference/training time and VRAM consumption of our D<sup>3</sup>-RSMDE are far lower than those of
+            other Diffusion-based models and are already comparable to lightweight ViT models.
+        </p>
+    </div>
+
+    <div class="new-section">
+        <h2 class="section-title">Quantitative Comparison</h2>
+        <div class="table-container">
+            <table class="results-table">
+                <thead>
+                <tr>
+                    <th rowspan="2">Model</th>
+                    <th colspan="5">MAE ↓</th>
+                    <th colspan="5">δ³ ↑</th>
+                    <th colspan="5">PSNR ↑</th>
+                    <th colspan="5">LPIPS ↓</th>
+                </tr>
+                <tr>
+                    <th>J&K</th>
+                    <th>SA</th>
+                    <th>Med</th>
+                    <th>Swi</th>
+                    <th>Ast</th>
+                    <th>J&K</th>
+                    <th>SA</th>
+                    <th>Med</th>
+                    <th>Swi</th>
+                    <th>Ast</th>
+                    <th>J&K</th>
+                    <th>SA</th>
+                    <th>Med</th>
+                    <th>Swi</th>
+                    <th>Ast</th>
+                    <th>J&K</th>
+                    <th>SA</th>
+                    <th>Med</th>
+                    <th>Swi</th>
+                    <th>Ast</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Adabins</td>
+                    <td>16.7</td>
+                    <td>28.4</td>
+                    <td>29.0</td>
+                    <td>19.6</td>
+                    <td>41.9</td>
+                    <td>79.9</td>
+                    <td>68.9</td>
+                    <td><u>86.3</u></td>
+                    <td>93.1</td>
+                    <td><u>75.2</u></td>
+                    <td>22.3</td>
+                    <td>17.4</td>
+                    <td>17.7</td>
+                    <td>21.2</td>
+                    <td>15.0</td>
+                    <td>0.181</td>
+                    <td>0.405</td>
+                    <td>0.367</td>
+                    <td>0.127</td>
+                    <td>0.524</td>
+                </tr>
+                <tr>
+                    <td>DPT</td>
+                    <td>14.8</td>
+                    <td>34.2</td>
+                    <td>29.7</td>
+                    <td>30.9</td>
+                    <td>43.5</td>
+                    <td>82.1</td>
+                    <td>62.5</td>
+                    <td>81.6</td>
+                    <td>84.6</td>
+                    <td>72.7</td>
+                    <td>23.3</td>
+                    <td>16.7</td>
+                    <td>17.8</td>
+                    <td>17.6</td>
+                    <td>14.9</td>
+                    <td>0.262</td>
+                    <td>0.604</td>
+                    <td>0.520</td>
+                    <td>0.204</td>
+                    <td>0.579</td>
+                </tr>
+                <tr>
+                    <td>Omnidata</td>
+                    <td>20.1</td>
+                    <td>30.7</td>
+                    <td>28.0</td>
+                    <td>19.2</td>
+                    <td>42.6</td>
+                    <td>61.9</td>
+                    <td>67.8</td>
+                    <td>80.9</td>
+                    <td>90.8</td>
+                    <td>72.1</td>
+                    <td>21.2</td>
+                    <td>18.5</td>
+                    <td>18.2</td>
+                    <td>21.6</td>
+                    <td>15.0</td>
+                    <td>0.354</td>
+                    <td>0.482</td>
+                    <td>0.479</td>
+                    <td>0.135</td>
+                    <td>0.553</td>
+                </tr>
+                <tr>
+                    <td>Pix2pix</td>
+                    <td>24.5</td>
+                    <td>39.3</td>
+                    <td>39.4</td>
+                    <td>38.9</td>
+                    <td>44.3</td>
+                    <td>68.9</td>
+                    <td>55.1</td>
+                    <td>72.0</td>
+                    <td>76.8</td>
+                    <td>69.3</td>
+                    <td>18.6</td>
+                    <td>15.2</td>
+                    <td>15.1</td>
+                    <td>15.5</td>
+                    <td>14.3</td>
+                    <td>0.450</td>
+                    <td>0.485</td>
+                    <td>0.434</td>
+                    <td>0.775</td>
+                    <td>0.937</td>
+                </tr>
+                <tr>
+                    <td>Marigold</td>
+                    <td><u>14.2</u></td>
+                    <td>23.7</td>
+                    <td>24.7</td>
+                    <td>14.2</td>
+                    <td><u>40.0</u></td>
+                    <td><u>83.1</u></td>
+                    <td><u>71.7</u></td>
+                    <td>85.8</td>
+                    <td><u>93.7</u></td>
+                    <td>72.8</td>
+                    <td><u>24.3</u></td>
+                    <td>19.6</td>
+                    <td>19.3</td>
+                    <td><u>24.5</u></td>
+                    <td><u>15.7</u></td>
+                    <td><strong>0.162</strong></td>
+                    <td><u>0.326</u></td>
+                    <td>0.329</td>
+                    <td><u>0.104</u></td>
+                    <td><strong>0.488</strong></td>
+                </tr>
+                <tr>
+                    <td>EcoDepth</td>
+                    <td>26.4</td>
+                    <td>49.0</td>
+                    <td>49.0</td>
+                    <td>37.4</td>
+                    <td>43.3</td>
+                    <td>65.7</td>
+                    <td>49.4</td>
+                    <td>67.4</td>
+                    <td>77.9</td>
+                    <td>69.9</td>
+                    <td>17.9</td>
+                    <td>13.3</td>
+                    <td>13.2</td>
+                    <td>16.0</td>
+                    <td>14.5</td>
+                    <td>0.461</td>
+                    <td>0.428</td>
+                    <td>0.563</td>
+                    <td>0.265</td>
+                    <td>0.702</td>
+                </tr>
+                <tr class="group-separator">
+                    <td><strong>D<sup>3</sup>-RSMDE (VA_VAE)</strong></td>
+                    <td>13.6</td>
+                    <td><u>21.7</u></td>
+                    <td><u>23.4</u></td>
+                    <td><u>14.1</u></td>
+                    <td>41.7</td>
+                    <td>79.1</td>
+                    <td>70.0</td>
+                    <td>85.9</td>
+                    <td>93.3</td>
+                    <td>67.8</td>
+                    <td>23.7</td>
+                    <td><u>20.1</u></td>
+                    <td><u>20.0</u></td>
+                    <td>24.2</td>
+                    <td>15.1</td>
+                    <td>0.203</td>
+                    <td>0.366</td>
+                    <td><u>0.301</u></td>
+                    <td>0.107</td>
+                    <td>0.574</td>
+                </tr>
+                <tr>
+                    <td><strong>D<sup>3</sup>-RSMDE (AEKL)</strong></td>
+                    <td><strong>12.7</strong></td>
+                    <td><strong>21.6</strong></td>
+                    <td><strong>22.1</strong></td>
+                    <td><strong>13.4</strong></td>
+                    <td><strong>36.1</strong></td>
+                    <td><strong>83.3</strong></td>
+                    <td><strong>72.1</strong></td>
+                    <td><strong>88.1</strong></td>
+                    <td><strong>94.3</strong></td>
+                    <td><strong>76.1</strong></td>
+                    <td><strong>24.5</strong></td>
+                    <td><strong>20.2</strong></td>
+                    <td><strong>20.4</strong></td>
+                    <td><strong>24.8</strong></td>
+                    <td><strong>16.2</strong></td>
+                    <td><u>0.180</u></td>
+                    <td><strong>0.325</strong></td>
+                    <td><strong>0.290</strong></td>
+                    <td><strong>0.104</strong></td>
+                    <td><u>0.511</u></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="table-caption">
+            Quantitative comparison with SOTA methods on five datasets. The best result is highlighted in
+            <strong>bold</strong> and the second best result is <u>underlined</u>.
+        </p>
+    </div>
+    <!-- Benchmark Comparison Section -->
+    <!--    <div class="level3">-->
+    <!--        <h2 style="text-align: center; font-size: 2.3em; font-weight: bold; margin: 2.5em 0 0.5em 0; color: #222;">-->
+    <!--            Experiments Results Comparison</h2>-->
+    <!--        <img src="src/output1.png" alt="Benchmark Image" class="level3-image">-->
+    <!--    </div>-->
+
+
+    <footer>
+        <p>Anonymous Authors</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            function initPagerFor(gallery) {
+                const rows = gallery.querySelectorAll('.slider-row');
+                const prevBtn = gallery.querySelector('.slider-prev');
+                const nextBtn = gallery.querySelector('.slider-next');
+                const dotsBox = gallery.querySelector('.slider-dots');
+                let currentIndex = 0,
+                    visibleCols,
+                    maxIndex,
+                    autoSlideTimer,
+                    isDragging = false;
+
+                // 计算一行能显示多少列
+                function calcVisibleCols() {
+                    const galleryW = gallery.clientWidth;
+                    const style = getComputedStyle(rows[0]);
+                    const gap = parseFloat(style.gap) || 0;
+                    const itemW = rows[0].querySelector('.slider-item')
+                        .getBoundingClientRect().width;
+                    return Math.max(1, Math.floor((galleryW + gap) / (itemW + gap)));
+                }
+
+                function buildDots() {
+                    dotsBox.innerHTML = '';
+                    for (let i = 0; i <= maxIndex; i++) {
+                        const dot = document.createElement('span');
+                        dot.className = 'slider-dot';
+                        if (i === currentIndex) dot.classList.add('active');
+                        dot.addEventListener('click', () => {
+                            currentIndex = i;
+                            update();
+                            resetAuto();
+                        });
+                        dotsBox.appendChild(dot);
+                    }
+                }
+
+                function update() {
+                    const style = getComputedStyle(rows[0]);
+                    const gap = parseFloat(style.gap) || 0;
+                    const itemW = rows[0].querySelector('.slider-item')
+                        .getBoundingClientRect().width;
+                    const offset = currentIndex * (itemW + gap);
+                    rows.forEach(r => {
+                        r.style.transform = `translateX(${-Math.round(offset)}px)`;
+                    });
+                    // 更新 dots 高亮
+                    dotsBox.querySelectorAll('.slider-dot').forEach((d, i) => {
+                        d.classList.toggle('active', i === currentIndex);
+                    });
+                }
+
+                function recalc() {
+                    visibleCols = calcVisibleCols();
+                    const total = rows[0].children.length;
+                    maxIndex = Math.max(0, total - visibleCols);
+                    currentIndex = Math.min(currentIndex, maxIndex);
+                    buildDots();
+                    update();
+                }
+
+                function goNext() {
+                    currentIndex = (currentIndex === maxIndex ? 0 : currentIndex + 1);
+                    update();
+                }
+
+                function goPrev() {
+                    currentIndex = (currentIndex === 0 ? maxIndex : currentIndex - 1);
+                    update();
+                }
+
+                function startAuto() {
+                    clearInterval(autoSlideTimer);
+                    autoSlideTimer = setInterval(() => {
+                        if (!isDragging) goNext();
+                    }, 3000);
+                }
+
+                function stopAuto() {
+                    clearInterval(autoSlideTimer);
+                }
+
+                function resetAuto() {
+                    stopAuto();
+                    startAuto();
+                }
+
+                // 绑定左右按钮
+                prevBtn.addEventListener('click', () => {
+                    goPrev();
+                    resetAuto();
+                });
+                nextBtn.addEventListener('click', () => {
+                    goNext();
+                    resetAuto();
+                });
+
+                // 鼠标/触摸悬停时暂停
+                gallery.addEventListener('mouseenter', stopAuto);
+                gallery.addEventListener('mouseleave', resetAuto);
+                gallery.addEventListener('touchstart', stopAuto);
+                gallery.addEventListener('touchend', resetAuto);
+
+                // 拖动 handle 时也暂停
+                gallery.querySelectorAll('.twentytwenty-handle').forEach(handle => {
+                    handle.addEventListener('mousedown', () => {
+                        isDragging = true;
+                        stopAuto();
+                    });
+                    handle.addEventListener('touchstart', () => {
+                        isDragging = true;
+                        stopAuto();
+                    });
+                });
+                document.addEventListener('mouseup', () => {
+                    isDragging = false;
+                    resetAuto();
+                });
+                document.addEventListener('touchend', () => {
+                    isDragging = false;
+                    resetAuto();
+                });
+
+                window.addEventListener('resize', recalc);
+
+                // 首次启动
+                recalc();
+                startAuto();
+            }
+
+            (async function () {
+                // —— 1）动态扫描并插入 slider-item ——
+                const rowsConfig = [
+                    {
+                        id: 'top-row1',
+                        overlay: 'src/img/RGB1/',
+                        bellow: 'src/img/Label_color1/',
+                        makeBellow: id => `tile_${id}_color.png`
+                    },
+                    {
+                        id: 'bottom-row1',
+                        overlay: 'src/img/EcoDepth_color1/',
+                        bellow: 'src/img/Ours_color1/',
+                        makeBellow: id => `tile_${id}_pred_depth_color.png`
+                    },
+                    {
+                        id: 'top-row2',
+                        overlay: 'src/img/RGB2/',
+                        bellow: 'src/img/Label_color2/',
+                        makeBellow: id => `tile_${id}_color.png`
+                    },
+                    {
+                        id: 'bottom-row2',
+                        overlay: 'src/img/Vit module_color2/',
+                        bellow: 'src/img/Ours_color2/',
+                        makeBellow: id => `tile_${id}_pred_depth_color.png`
+                    }
+                ];
+
+                async function scanDir(dir) {
+                    // 假设你已经使用 JSON 清单 或者 服务端 API 返回文件列表
+                    const res = await fetch(dir + 'file.json');
+                    return res.ok ? res.json() : [];
+                }
+
+                for (const cfg of rowsConfig) {
+                    const container = document.getElementById(cfg.id);
+                    if (!container) continue;
+
+                    const files = await scanDir(cfg.overlay);   // e.g. ["tile_131.png", ...]
+                    files.forEach(fname => {
+                        const num = fname.match(/\d+/)[0];
+                        const overlaySrc = cfg.overlay + fname;
+                        const bellowSrc = cfg.bellow + cfg.makeBellow(num);
+                        // ① 在外层声明变量
+                        let label1, label2;
+
+                        // ② 根据路径或 cfg 决定它们的值
+                        if (overlaySrc.includes("RGB")) {
+                            label1 = "RGB";
+                            label2 = "Label";
+                        } else if (overlaySrc.includes("EcoDepth")) {
+                            label1 = "EcoDepth";
+                            label2 = "Ours";
+                        } else {
+                            label1 = "ViT only";
+                            label2 = "Ours";
+                        }
+
+                        const item = document.createElement('div');
+                        item.className = 'slider-item';
+                        item.innerHTML = `
+                        <div class="img-compare-container">
+                          <div class="label input">${label1}</div>
+                          <div class="label ours">${label2}</div>
+                            <div class="img-bellow">
+                              <img class="slider-item-bellow" src="${bellowSrc}">
+                            </div>
+                            <div class="img-overlay">
+                              <img class="slider-item-above" src="${overlaySrc}">
+                            </div>
+                            <div class="twentytwenty-handle">
+                              <span class="twentytwenty-left-arrow"></span>
+                              <span class="twentytwenty-right-arrow"></span>
+                            </div>
+                        </div>`;
+                        container.appendChild(item);
+                    });
+                }
+
+                // —— 2）等待所有新插入的 <img> 真正 load 完 ——
+                let imgs = Array.from(document.querySelectorAll(
+                    '#top-row1 img, #bottom-row1 img'
+                ));
+                await Promise.all(imgs.map(img => new Promise(res => {
+                    if (img.complete && img.naturalHeight !== 0) return res();
+                    img.addEventListener('load', res);
+                    img.addEventListener('error', res);
+                })));
+
+                imgs = Array.from(document.querySelectorAll(
+                    '#top-row2 img, #bottom-row2 img'
+                ));
+                await Promise.all(imgs.map(img => new Promise(res => {
+                    if (img.complete && img.naturalHeight !== 0) return res();
+                    img.addEventListener('load', res);
+                    img.addEventListener('error', res);
+                })));
+
+
+                initImageCompare();
+                // —— 4）再初始化翻页逻辑（每次只移动一个 slide）——
+                document.querySelectorAll('.slider-gallery').forEach(initPagerFor);
+
+                // 重新计算一下
+            })();
+
+            // Paper button click - display a modal message
+            document.querySelector('#custom-btn-paper').addEventListener('click', function () {
+                alert('The paper has not been made public yet');
+            });
+
+            // Dataset Code button click - navigate to the GitHub page
+            document.querySelector('#custom-btn-code').addEventListener('click', function () {
+                window.location.href = 'https://anonymous.4open.science/r/D3RSMDE-5547/README.md';
+            });
+
+            // Our datasets button click - navigate to Hugging Face page
+            document.querySelector('#custom-btn-dataset').addEventListener('click', function () {
+                window.location.href = 'https://huggingface.co/datasets/RS3DBench/RS3DBench';
+            });
+        });
+
+        function initImageCompare() {
+            document.querySelectorAll('.img-compare-container').forEach(container => {
+                const overlay = container.querySelector('.img-overlay');
+                const handle = container.querySelector('.twentytwenty-handle');
+                if (!overlay || !handle) return;
+
+                // 1. 统一函数：把 overlay 拉到中间，handle 跟上
+                function resetHandle() {
+                    const W = container.clientWidth;
+                    const x = W / 2;
+                    overlay.style.width = x + 'px';
+                    handle.style.left = (x - handle.offsetWidth / 2) + 'px';
+                }
+
+                // 2. 初始置中
+                resetHandle();
+
+                // 3. 窗口 resize 时也要重新置中
+                window.addEventListener('resize', resetHandle);
+
+                // 4. 绑定同一份拖拽逻辑
+                let dragging = false;
+                handle.addEventListener('mousedown', e => {
+                    e.preventDefault();
+                    dragging = true;
+                });
+                handle.addEventListener('touchstart', e => {
+                    e.preventDefault();
+                    dragging = true;
+                });
+                document.addEventListener('mouseup', () => dragging = false);
+                document.addEventListener('touchend', () => dragging = false);
+
+                document.addEventListener('mousemove', onDrag);
+                document.addEventListener('touchmove', onDrag);
+
+                function onDrag(e) {
+                    if (!dragging) return;
+                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    let offsetX = clientX - container.getBoundingClientRect().left;
+                    offsetX = Math.max(0, Math.min(offsetX, container.clientWidth));
+                    overlay.style.width = offsetX + 'px';
+                    handle.style.left = (offsetX - handle.offsetWidth / 2) + 'px';
+                }
+            });
+        }
+    </script>
+</div>
+</body>
+</html>
