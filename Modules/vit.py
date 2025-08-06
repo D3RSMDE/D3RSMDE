@@ -7,7 +7,6 @@ import torch.nn.functional as F
 
 def unflatten_with_named_tensor(input, dim, sizes):
     """Workaround for unflattening with named tensor."""
-    # tracer acts up with unflatten. See https://github.com/pytorch/pytorch/issues/49538
     new_shape = list(input.shape)[:dim] + list(sizes) + list(input.shape)[dim+1:]
     return input.view(*new_shape)
     

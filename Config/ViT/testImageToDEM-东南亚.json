@@ -1,7 +1,0 @@
-{
-  "dataset_path": "../Marigold/BASE_DATA_DIR/ImageToDEM-东南亚",
-  "seed": 42,
-  "num_workers": 6,
-  "output_dir": "results",
-  "checkpoint_path": "/nfs5/wrz/src/python/MyVit-temp/output/25-07-05_06-55/checkpoints/epoch_18.pth"
-}

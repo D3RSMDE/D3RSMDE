@@ -1,0 +1,17 @@
+{
+  "dataset_path": "Dataset/BASE_DATA_DIR/ImageToDEM-SA",
+  "seed": 42,
+  "num_workers": 8,
+  "output_dir": "results",
+  "diffusion_cfg": {
+    "diff_iter": 6,
+    "betas": {
+      "start": 0.8,
+      "stop": 0,
+      "num_timesteps": 6
+    }
+  },
+  "checkpoint_path": "",
+  "vae_type": "AutoencoderKL",
+  "vae_path": "Modules/vae"
+}

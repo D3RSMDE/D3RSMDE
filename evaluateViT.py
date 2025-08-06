@@ -4,7 +4,7 @@ import json
 import shutil
 import time
 
-from Utils.randomChoose import init_seed, seed_worker
+from Utils.chooseRandom import init_seed, seed_worker
 import lpips
 import torch
 from torch.utils.data import DataLoader
@@ -14,22 +14,20 @@ import numpy as np
 from tqdm import tqdm
 
 from Utils.calculateDiff import calculate_single
-from Utils.loadDatasets import ImageToDEMDataset
+from Utils.loadViTDatasets import ImageToDEMDataset
 from matplotlib.colors import Normalize
 from matplotlib import pyplot as plt
-from Modules.MyVit import MyDit
+from Modules.D3RSMDE_ViT import D3_Dit
 from Utils.autoSelectGPU import select_best_gpu
 
 
 def generate_heatmap(diff):
-    # 将差值标准化到 0-255
     diff = Normalize()(diff) * 255
     diff = diff.astype(np.uint8)
 
-    # 使用 matplotlib 的热力图 colormap
     cmap = plt.get_cmap('jet')
-    heatmap = cmap(diff / 255.0)[:, :, :3]  # 转为 RGB 格式 (H, W, 3)
-    heatmap = (heatmap * 255).astype(np.uint8)  # 确保类型为 uint8
+    heatmap = cmap(diff / 255.0)[:, :, :3]
+    heatmap = (heatmap * 255).astype(np.uint8)
     return heatmap
 
 
@@ -38,9 +36,9 @@ def evaluate(config_path: str):
     # Load configuration
     with open(config_path, 'r', encoding='utf-8') as f:
         cfg = json.load(f)
-    print(f"加载配置文件: {config_path}，配置内容: {cfg}")
-    init_seed(cfg['seed'])  # 设置随机种子
-    generator = torch.Generator().manual_seed(cfg['seed'])  # 设置随机种子, todo: 之后加加看
+    print(f"Loading configuration from {config_path}, content: {cfg}")
+    init_seed(cfg['seed'])
+    generator = torch.Generator().manual_seed(cfg['seed'])
     # Extract configuration parameters
     dataset_path = cfg['dataset_path']
     output_dir = cfg['output_dir']
@@ -54,22 +52,24 @@ def evaluate(config_path: str):
     os.makedirs(os.path.join(output_dir, "depth_raw"), exist_ok=True)
     os.makedirs(os.path.join(output_dir, "depth_npy"), exist_ok=True)
     shutil.copy(config_path, os.path.join(output_dir, os.path.basename(config_path)))
-    shutil.copy(__file__, output_dir)  # 复制当前脚本文件
-    shutil.copy("Utils/loadDatasets.py", output_dir)  # 复制数据集加载脚本
+    shutil.copy(__file__, output_dir)
+    shutil.copy("Utils/loadDiffusionDatasets.py", output_dir)
 
     print(f"Configuration: {cfg}")
     print(f"输出文件夹：{output_dir}")
 
     # Load test dataset
-    # test_dataset = ImageToDEMDataset(root_dir=dataset_path, mode='test', worker_init_fn=seed_worker,
-    #                                  generator=generator)
-    test_dataset = ImageToDEMDataset(root_dir=dataset_path, mode='val',
-                                     split_text=cfg['test_split_text'] if 'test_split_text' in cfg else None,
-                                     not_split=cfg.get('not_split', True))
+    if 'test_split_text' in cfg:
+        test_dataset = ImageToDEMDataset(root_dir=dataset_path, mode='val',
+                                         split_text=cfg['test_split_text'] if 'test_split_text' in cfg else None,
+                                         not_split=cfg.get('not_split', True))
+    else:
+        test_dataset = ImageToDEMDataset(root_dir=dataset_path, mode='test', worker_init_fn=seed_worker,
+                                         generator=generator)
     test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False, num_workers=cfg['num_workers'])
 
     # Initialize model
-    model, tempDict = MyDit.from_pretrained(MyDit(device=device, **cfg), checkpoint_path, )
+    model, tempDict = D3_Dit.from_pretrained(D3_Dit(device=device, **cfg), checkpoint_path, )
     model.eval()
 
     # Set device
@@ -91,9 +91,9 @@ def evaluate(config_path: str):
             total_time += time.time() - time1
 
             # Calculate evaluation metrics
-            target_depth_numpy = batch[1].squeeze(0).squeeze(0).cpu().numpy()  # batch[1] 范围是 [0, 1]
-            pred_depth_numpy = pred_depth.squeeze(0).squeeze(0).cpu().numpy()  # 预测深度范围也是 [0, 1]
-            allMetrics.append(calculate_single(target_depth_numpy, pred_depth_numpy, lpips_model))  # todo: 检查loss计算
+            target_depth_numpy = batch[1].squeeze(0).squeeze(0).cpu().numpy()
+            pred_depth_numpy = pred_depth.squeeze(0).squeeze(0).cpu().numpy()
+            allMetrics.append(calculate_single(target_depth_numpy, pred_depth_numpy, lpips_model))
 
             # Save results
             image_name = os.path.basename(batch[2][0].replace('.png', ''))
@@ -127,6 +127,6 @@ def evaluate(config_path: str):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', type=str, default='Config/testImageToDEM-瑞士2_512.json')
+    parser.add_argument('--config', type=str, default='Config/testImageToDEM-Swi2_512.json')
     args = parser.parse_args()
     evaluate(args.config)  # Adjust config path if necessary

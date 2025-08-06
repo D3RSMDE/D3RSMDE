@@ -10,12 +10,10 @@ from .base_model import BaseModel
 from .blocks import _make_encoder
 from .dpt_depth import _make_fusion_block
 from .vit import forward_vit
-from diffusers import UNet2DConditionModel, DDPMScheduler, DDIMScheduler, LCMScheduler
 from Modules.blocks import Interpolate
 
 
 class DPTEncoder(BaseModel):
-    """DPT-based 特征提取器，含 refinenet 融合块"""
 
     def __init__(
             self,
@@ -58,28 +56,9 @@ class DPTEncoder(BaseModel):
             nn.Conv2d(32, 1, kernel_size=1, stride=1, padding=0),
             nn.ReLU(True),
             nn.Identity(),
-            # nn.Conv2d(features, features // 2, kernel_size=3, stride=2, padding=1),
-            # nn.ReLU(True),
-            # nn.Conv2d(features // 2, features // 4, kernel_size=3, stride=2, padding=1),
-            # nn.ReLU(True),
-            # nn.Conv2d(features // 4, 4, kernel_size=1, stride=1, padding=0),
-            # nn.ReLU(True),
-            # nn.Identity(),
         )
-
-        # self.decoder = nn.Sequential(
-        #     nn.Flatten(),  # 【B,4,64,64】->【B,16384】 :contentReference[oaicite:7]{index=7}
-        #     nn.Linear(4 * 64 * 64, 1 * 512 * 512),  # 【B,16384】->【B,1024】 :contentReference[oaicite:8]{index=8}
-        #     nn.GELU(),  # 激活函数
-        #     nn.Unflatten(1, (1, 64 * 8, 64 * 8))  # 重塑为【B,1,512,512】
-        # )
-        # self.decoder = EfficientKAN()
-
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # 判断x的通道数
-        # if x.shape[1] == 1:
-        #     x = self.input_conv(x)  # [B,3,H,W]，将单通道图像转换为三通道
-        # ViT 特征提取
+
         l1, l2, l3, l4 = forward_vit(self.pretrained, x)
         # Reassemble
         l1_rn = self.scratch.layer1_rn(l1)
@@ -90,13 +69,10 @@ class DPTEncoder(BaseModel):
         p3 = self.scratch.refinenet3(p4, l3_rn)
         p2 = self.scratch.refinenet2(p3, l2_rn)
         p1 = self.scratch.refinenet1(p2, l1_rn)
-        # 投影
-        # p1_ds = self.downsample(p1)  # [B,features, 64,  64]
-        # p_feature = self.output_proj(p1_ds)  # [B,4,64,64]
-        p_feature = self.scratch.output_conv(p1)
-        # p_feature = self.decoder(p_feature)  # [B,1,512,512]
-        return (p_feature - p_feature.min()) / (p_feature.max() - p_feature.min() + 1e-8)
 
+        p_feature = self.scratch.output_conv(p1)
+
+        return (p_feature - p_feature.min()) / (p_feature.max() - p_feature.min() + 1e-8)
 
 
 class EfficientKAN(nn.Module):
@@ -109,22 +85,18 @@ class EfficientKAN(nn.Module):
         return F.interpolate(out, scale_factor=8, mode='bilinear', align_corners=True)
 
 
-
-class MyDit(BaseModel):
-    """结合 DPT-ViT 和 Marigold diffusion 的深度估计模型"""
-
+class D3_Dit(BaseModel):
     def __init__(
             self,
             backbone: str = "vitb_rn50_384", features: int = 256,
             readout: str = "project", use_bn: bool = False,
             alpha=3, beta=1, loss_types=None, generator=None, **kwargs
     ):
-        super(MyDit, self).__init__()
+        super(D3_Dit, self).__init__()
         if loss_types is None:
             loss_types = ["L1Loss"]
         self.alpha, self.beta = alpha, beta
         self.generator = generator
-        # RGB 特征编码器
         self.rgb_encoder = DPTEncoder(
             backbone=backbone,
             features=features,
@@ -133,12 +105,13 @@ class MyDit(BaseModel):
         )
 
         self.loss_types = loss_types
+
     def from_pretrained(self, path: str):
-        """从预训练模型加载参数"""
         tempDict = torch.load(path, map_location='cpu')
         warnings = self.load_state_dict(tempDict['model_state_dict'], strict=False)
-        print(f"从 {path} 加载模型成功，包含以下警告：{warnings}, 是第{tempDict['epoch']}个epoch的模型")
-        # 清除tempDict['model_state_dict']
+        print(f"load model from {path} successfully, "
+              f"warnings: {warnings}, epoch: {tempDict['epoch']}, best_val_loss: {tempDict['best_val_loss']:.6f}")
+
         del tempDict['model_state_dict']
         return self, tempDict
 
@@ -153,6 +126,3 @@ class MyDit(BaseModel):
 
     def compute_loss(self, depth_pred, depth):
         return HDN_interface(depth_pred, depth)
-
-
-# 包含以下警告：_IncompatibleKeys(missing_keys=['rgb_encoder.decoder.conv1x1.weight', 'rgb_encoder.decoder.conv1x1.bias'], unexpected_keys=['rgb_encoder.downsample.0.weight', 'rgb_encoder.downsample.0.bias', 'rgb_encoder.downsample.2.weight', 'rgb_encoder.downsample.2.bias', 'rgb_encoder.output_proj.weight', 'rgb_encoder.output_proj.bias']), 是第27个epoch的模型

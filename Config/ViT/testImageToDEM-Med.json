@@ -1,0 +1,7 @@
+{
+  "dataset_path": "Dataset/BASE_DATA_DIR/ImageToDEM-Med",
+  "seed": 42,
+  "num_workers": 6,
+  "output_dir": "results",
+  "checkpoint_path": ""
+}

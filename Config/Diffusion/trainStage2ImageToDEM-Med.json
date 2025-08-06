@@ -1,0 +1,25 @@
+{
+  "dataset_path": "Dataset/BASE_DATA_DIR/ImageToDEM-Med",
+  "batch_size": 16,
+  "lr": 1e-4,
+  "vae_lr": 8e-5,
+  "threshold_epoch": 10,
+  "downgrade_lr_ratio": 0.5,
+  "weight_decay": 0.05,
+  "dropout": 0.09,
+  "epochs": 60,
+  "seed": 42,
+  "num_workers": 8,
+  "save_n_epoch": 1  ,
+  "diffusion_cfg": {
+    "diff_iter": false,
+    "betas": {
+      "start": 0.8,
+      "stop": 0,
+      "num_timesteps": 6
+    }
+  },
+  "pretrained_model_path": "/home/wrz/src/python/SegRefiner/MyRefiner-VAE/output/25-07-24_15-12-30/checkpoints/epoch_20.pth",
+  "vae_type": "VA_VAE",
+  "vae_path": "Modules/tokenizer/Checkpoints/vavae-imagenet256-f16d32-dinov2.pt"
+}

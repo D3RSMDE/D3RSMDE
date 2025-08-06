@@ -1,0 +1,8 @@
+{
+  "dataset_path": "Dataset/BASE_DATA_DIR/ImageToDEM-Swi2_512",
+  "seed": 42,
+  "num_workers": 6,
+  "output_dir": "results",
+  "checkpoint_path": "",
+  "test_split_text": ["Dataset/Swi2_512/Swi2_512stage1-1.txt"]
+}
