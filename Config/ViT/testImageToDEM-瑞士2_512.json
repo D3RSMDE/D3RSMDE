@@ -1,0 +1,8 @@
+{
+  "dataset_path": "../Marigold/BASE_DATA_DIR/ImageToDEM-瑞士2_512",
+  "seed": 42,
+  "num_workers": 6,
+  "output_dir": "results",
+  "checkpoint_path": "/nfs5/wrz/src/python/MyVit/output/25-07-31_11-30-29/checkpoints/best.pth",
+  "test_split_text": ["Dataset/瑞士2_512/瑞士2_512stage1-1.txt"]
+}
