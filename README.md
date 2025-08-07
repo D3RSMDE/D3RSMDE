@@ -121,6 +121,11 @@ python trainDiffusion.py --config Config/Diffusion/your_config_file.json
 ```
 python evaluateDiffusion.py --config Config/Diffusion/your_config_file.json
 ```
+
+## The Dataset We Used
+![](src/firstImage_00.png)
+The figure shows the locations of the five data sets we used, and the generation effects of the model. They are: Japan + Korea (2,650 pairs, coastal mountainous terrain, 30 m resolution, J&K), Southeast Asia (7,000 pairs, plains and hills, 30 m resolution, SA), Mediterranean (29,225 pairs, desert and plateau, 30 m resolution, Med), Australia (1,249 pairs, plain, 5m resolution, Ast), Switzerland (4,827 pairs, mountain, 2m resolution, Swi).
+
 ## Experimental Results
 ### Quantitative Results
 Quantitative comparison with SOTA methods on the SA dataset. The best result is highlighted in **bold** and the second best result is <u>underlined</u>.*
