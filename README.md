@@ -1,15 +1,9 @@
 # D³-RSMDE: 40× Faster and High-Fidelity Remote Sensing Monocular Depth Estimation
 ## Overview
 We propose **D**epth **D**etail **D**iffusion for **R**emote **S**ensing **M**onocular **D**epth **E**stimation (D³-RSMDE), an efficient framework designed to achieve an optimal balance between speed and quality.   Our framework first leverages a ViT-based module to rapidly generate a high-quality preliminary depth map construction, which serves as a structural prior, effectively replacing the time-consuming initial structure 
-generation stage of diffusion models.   Based on this prior, we propose a **P**rogressive **L**inear **B**lending **R**efinement (PLBR) strategy, hich uses a lightweight U-Net to refine the details in only a few iterations.   The entire refinement step operates efficiently in a compact latent space supported by a Variational Autoencoder (VAE).   Extensive experiments demonstrate that D³-RSMDE achieves a notable 11.85% reduction in the Learned Perceptual Image Patch Similarity (LPIPS) perceptual metric over leading models like Marigold, while also achieving over a 40× speedup in inference and maintaining VRAM usage comparable to lightweight ViT models. For a more detailed comparison, we highly recommend visiting our **[Project URL](https://anonymous.4open.science/api/repo/D3RSMDE-5547/file/index.html?v=5486a0aa)**, which has a gallery for a more detailed comparison of the outputs of different models. (**Note that you need to refresh the page after clicking the link to avoid seeing only 404**)
+generation stage of diffusion models.   Based on this prior, we propose a **P**rogressive **L**inear **B**lending **R**efinement (PLBR) strategy, hich uses a lightweight U-Net to refine the details in only a few iterations.   The entire refinement step operates efficiently in a compact latent space supported by a Variational Autoencoder (VAE).   Extensive experiments demonstrate that D³-RSMDE achieves a notable 11.85% reduction in the Learned Perceptual Image Patch Similarity (LPIPS) perceptual metric over leading models like Marigold, while also achieving over a 40× speedup in inference and maintaining VRAM usage comparable to lightweight ViT models. For a more detailed comparison, we highly recommend visiting our **[Project URL](https://anonymous.4open.science/api/repo/D3RSMDE-5547/file/index.html?v=0)**, which has a gallery for a more detailed comparison of the outputs of different models. (**Note that you need to refresh the page after clicking the link to avoid seeing only 404**)
 
 ![](src/Whole_Structure-new.png)
-
-
-
-
-
-
 
 ## Project Structure
 
