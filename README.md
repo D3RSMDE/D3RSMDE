@@ -5,9 +5,9 @@ generation stage of diffusion models.   Based on this prior, we propose a **P**r
 
 ![](src/Whole_Structure-new.png)
 
-## [Project URL](https://anonymous.4open.science/api/repo/D3RSMDE-5547/file/index.html?v=0) (Gallery included)
+## [Project URL](https://anonymous.4open.science/api/repo/D3RSMDE-5547/file/index.html?v=0)
 
-For a more detailed comparison, we highly recommend visiting our **[Project URL](https://anonymous.4open.science/api/repo/D3RSMDE-5547/file/index.html?v=0)**, which has a gallery for a more detailed comparison of the outputs of different models. (**Note that you need to refresh the page after clicking the link to avoid seeing only 404**)
+For a more detailed comparison, we highly recommend visiting our **[Project URL](https://anonymous.4open.science/api/repo/D3RSMDE-5547/file/index.html?v=0): https://anonymous.4open.science/api/repo/D3RSMDE-5547/file/index.html?v=0**, which has a gallery for a more detailed comparison of the outputs of different models. (**Note that you need to refresh the page after clicking the link to avoid seeing only 404**)
 
 ## Project Structure
 
